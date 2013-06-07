@@ -2,6 +2,13 @@ import cv2
 import math
 import subprocess
 import numpy
+import ghmm
+import models
+
+UP = 0
+DOWN = 1
+LEFT = 2
+RIGHT = 3
 
 path = []
 
@@ -22,17 +29,20 @@ def pointer_pos(img):
 
     return (None, None)
 
-def execute(path):
-    new_path = []
-    last_elem = None
-    for elem in path:
-        if last_elem != elem:
-            new_path.append(elem)
-            last_elem = elem
+def execute(emission_seq, models):
+    max_comm = None
+    max_val = 0
+    for model, command in models:
+        print(model.forward(emission_seq))
+        res = model.forward(emission_seq)
 
-    print new_path
-    if new_path == ['up', 'right']:
-        subprocess.call(['/usr/bin/xdotool', 'getactivewindow', 'windowkill'])
+        if res[1][-1] > max_val:
+            max_val = res[1][-1]
+            max_comm = command
+
+    if max_val >= 0.4:
+        subprocess.call(max_comm)
+
 
 cam = cv2.VideoCapture(0)
  
@@ -40,6 +50,7 @@ winName = "Movement Indicator"
 cv2.namedWindow(winName, cv2.CV_WINDOW_AUTOSIZE)
 
 img = cv2.cvtColor(cam.read()[1], cv2.COLOR_BGR2HSV)
+cv2.imwrite("test.jpg", img)
 img = cv2.inRange(img, (70, 100, 100), (150, 255, 255))
 img = cv2.erode(img, numpy.array([[1,1,1],[1,1,1],[1,1,1]]))
 img = cv2.dilate(img, numpy.array([[1,1,1],[1,1,1],[1,1,1]]), iterations=3)
@@ -56,7 +67,6 @@ while True:
     img = cv2.inRange(img, (70, 50, 50), (150, 255, 255))
     img = cv2.erode(img, numpy.array([[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1]]), iterations=2)
     img = cv2.dilate(img, numpy.array([[1,1,1],[1,1,1],[1,1,1]]), iterations=3)
-
     x1, y1 = pointer_pos(img)
 
     if x1 != None and x0 != None and y1 != None and y0 != None:
@@ -66,19 +76,20 @@ while True:
         if abs(x_delta) > 10 or abs(y_delta) > 10:
             degree = math.atan2(y_delta, x_delta)
             if -0.75 * math.pi <= degree < -0.25 * math.pi:
-                path.append('up')
+                path.append(UP)
             elif -0.25 * math.pi <= degree < 0.25 * math.pi:
-                path.append('left')
+                path.append(LEFT)
             elif 0.25 * math.pi <= degree < 0.75 * math.pi:
-                path.append('down')
+                path.append(DOWN)
             else:
-                path.append('right')
+                path.append(RIGHT)
             print("Appended to")
             print(path)
         else:
             not_changed += 1
     if not_changed > 5:
-        execute(path)
+        if len(path) >= 2:
+            execute(ghmm.EmissionSequence(models.sigma, path), models.models)
         path = []
         not_changed = 0
     
