@@ -33,7 +33,7 @@ def execute(emission_seq, models):
     max_comm = None
     max_val = 0
     for model, command in models:
-        #print(model.forward(emission_seq))
+        print(model.forward(emission_seq))
         res = model.forward(emission_seq)
 
         if res[1][-1] > max_val:
@@ -88,6 +88,8 @@ while True:
             #print(path)
         else:
             not_changed += 1
+    else:
+        not_changed += 1
     if not_changed > 5:
         if len(path) >= 2:
             print(path)

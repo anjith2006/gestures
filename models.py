@@ -49,6 +49,10 @@ def emission_matrix(gesture):
 
     return B
 
+def initial_vector(gesture):
+    vec = [0 for i in range(4)]
+    vec[gesture[0]] = 1
+    return vec
 
 # Construct parameters
 models = []
@@ -58,7 +62,7 @@ for gesture in gestures:
     # transition matrix
     A = transition_matrix(gesture[0])
     B = emission_matrix(gesture[0])
-    pi = [1, 0, 0, 0] # TODO: make flexible depending on first vector
+    pi = initial_vector(gesture[0])
                 # in gesture
     m = ghmm.HMMFromMatrices(sigma, ghmm.DiscreteDistribution(sigma), A, B, pi)
     print(m)
