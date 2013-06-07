@@ -33,7 +33,7 @@ def execute(emission_seq, models):
     max_comm = None
     max_val = 0
     for model, command in models:
-        print(model.forward(emission_seq))
+        #print(model.forward(emission_seq))
         res = model.forward(emission_seq)
 
         if res[1][-1] > max_val:
@@ -42,6 +42,7 @@ def execute(emission_seq, models):
 
     if max_val >= 0.4:
         subprocess.call(max_comm)
+        print(max_comm)
 
 
 cam = cv2.VideoCapture(0)
@@ -83,12 +84,13 @@ while True:
                 path.append(DOWN)
             else:
                 path.append(RIGHT)
-            print("Appended to")
-            print(path)
+            #print("Appended to")
+            #print(path)
         else:
             not_changed += 1
     if not_changed > 5:
         if len(path) >= 2:
+            print(path)
             execute(ghmm.EmissionSequence(models.sigma, path), models.models)
         path = []
         not_changed = 0

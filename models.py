@@ -10,12 +10,14 @@ OBSERVATIONS_COUNT = 4
 gestures = [
     ([UP, RIGHT], ['/usr/bin/xdotool', 'getactivewindow', 'windowkill']),
     ([UP, LEFT], ['notify-send', '"received command"', '"Hooray!"']),
+    ([DOWN], ['amixer', 'set', 'Master', '10%-']),
+    ([UP], ['amixer', 'set', 'Master', '10%+']),
 ]
 
 # TODO: Zuordnung von Indizes stimmt noch nicht
 def transition_matrix(gesture):
     gestes = list(set(gesture))
-    A = [[0 for i in range(GESTES_COUNT)] for j in range(GESTES_COUNT)]
+    A = [[0.01 for i in range(GESTES_COUNT)] for j in range(GESTES_COUNT)]
     # self transitions are high
     for geste in gestes:
         A[geste][geste] = 0.7
@@ -59,7 +61,17 @@ for gesture in gestures:
     pi = [1, 0, 0, 0] # TODO: make flexible depending on first vector
                 # in gesture
     m = ghmm.HMMFromMatrices(sigma, ghmm.DiscreteDistribution(sigma), A, B, pi)
+    print(m)
     models.append((m, gesture[1]))
+
+#close = models[0][0]
+#close.baumWelch(ghmm.SequenceSet(sigma, [
+#    [0, 0, 0, 0, 3, 3, 3, 3, 3],
+#    [0, 0, 0, 0, 3, 3, 3, 3, 3, 1],
+#    [0, 0, 0, 0, 0, 3, 3, 3, 1],
+#    [0, 0, 0, 3, 3, 3],
+#    [0, 0, 0, 3, 3, 3, 1]
+#]))
 
 #A = [[0.7, 0.3], [0, 1]]
 #B = [[0.6, 0.1, 0.2, 0.2], [.2, .2, .1, .6]]
