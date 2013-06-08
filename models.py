@@ -35,7 +35,7 @@ def transition_matrix(gesture):
 
 def emission_matrix(gesture):
     gestes = set(gesture)
-    B = [[0 for i in range(OBSERVATIONS_COUNT)] for j in range(GESTES_COUNT)]
+    B = [[0.01 for i in range(OBSERVATIONS_COUNT)] for j in range(GESTES_COUNT)]
     
     for geste in gestes:
         if geste == UP:
@@ -68,14 +68,16 @@ for gesture in gestures:
     print(m)
     models.append((m, gesture[1]))
 
-#close = models[0][0]
-#close.baumWelch(ghmm.SequenceSet(sigma, [
-#    [0, 0, 0, 0, 3, 3, 3, 3, 3],
-#    [0, 0, 0, 0, 3, 3, 3, 3, 3, 1],
-#    [0, 0, 0, 0, 0, 3, 3, 3, 1],
-#    [0, 0, 0, 3, 3, 3],
-#    [0, 0, 0, 3, 3, 3, 1]
-#]))
+close = models[0][0]
+close.baumWelch(ghmm.SequenceSet(sigma, [
+    [0, 0, 0, 0, 3, 3, 3, 3, 3],
+    [0, 0, 0, 0, 3, 3, 3, 3, 3, 1],
+    [0, 0, 0, 0, 0, 3, 3, 3, 1],
+    [0, 0, 0, 3, 3, 3],
+    [0, 0, 0, 3, 3, 3, 1]
+]))
+
+print(close)
 
 #A = [[0.7, 0.3], [0, 1]]
 #B = [[0.6, 0.1, 0.2, 0.2], [.2, .2, .1, .6]]
