@@ -39,3 +39,15 @@ gestures = [
 Pay attention to the fact that there are no quotation marks around directions
 like `UP` and `DOWN`, because these are special keywords by gestures.
 
+Training of Models
+------------------
+You can train your gestures by pressing the number keys on your keyboard
+(currently this is limited to 0 to 3). This will trigger the training
+mode and you can perform the gesture you want to be detected later.
+Depending on the number you pressed before, the appropriate gesture
+from the gestures list will be trained.
+
+Note: The training will not be saved yet, when you terminate the program.
+
+After a gesture has been performed in training mode, the program will
+return to detection mode again.
