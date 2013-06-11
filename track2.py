@@ -1,3 +1,5 @@
+#!/usr/bin/python2.7
+
 import cv2
 import math
 import subprocess
@@ -29,6 +31,23 @@ def pointer_pos(img):
 
     return (None, None)
 
+def movement_direction(x_delta, y_delta):
+    if abs(x_delta) > 10 or abs(y_delta) > 10:
+        degree = math.atan2(y_delta, x_delta)
+        if -0.75 * math.pi <= degree < -0.25 * math.pi:
+            direction = UP
+        elif -0.25 * math.pi <= degree < 0.25 * math.pi:
+            direction = LEFT
+        elif 0.25 * math.pi <= degree < 0.75 * math.pi:
+            direction = DOWN
+        else:
+            direction = RIGHT
+
+        return direction
+    else:
+        return None
+
+
 def execute(emission_seq, models):
     max_comm = None
     max_val = 0
@@ -40,10 +59,19 @@ def execute(emission_seq, models):
             max_val = res[1][-1]
             max_comm = command
 
-    if max_val >= 0.4:
+    if max_val >= 0.3:
         subprocess.call(max_comm)
         print(max_comm)
 
+
+def train(emission_seq, model):
+    model.baumWelch(emission_seq)
+
+
+# Two variables to determine changes in train-mode
+train_mode_pre = False
+train_mode = False
+train_target = 0
 
 cam = cv2.VideoCapture(0)
  
@@ -51,7 +79,6 @@ winName = "Movement Indicator"
 cv2.namedWindow(winName, cv2.CV_WINDOW_AUTOSIZE)
 
 img = cv2.cvtColor(cam.read()[1], cv2.COLOR_BGR2HSV)
-cv2.imwrite("test.jpg", img)
 img = cv2.inRange(img, (70, 100, 100), (150, 255, 255))
 img = cv2.erode(img, numpy.array([[1,1,1],[1,1,1],[1,1,1]]))
 img = cv2.dilate(img, numpy.array([[1,1,1],[1,1,1],[1,1,1]]), iterations=3)
@@ -61,6 +88,12 @@ x1, y1 = pointer_pos(img)
 not_changed = 0
 
 while True:
+    # if we switched to train mode, delete all prior knowledge
+    if train_mode_pre == False and train_mode == True:
+        path = []
+        not_changed = 0
+
+    train_mode_pre = train_mode
     x0 = x1
     y0 = y1
     
@@ -74,18 +107,9 @@ while True:
         x_delta = x1 - x0
         y_delta = y1 - y0
         
-        if abs(x_delta) > 10 or abs(y_delta) > 10:
-            degree = math.atan2(y_delta, x_delta)
-            if -0.75 * math.pi <= degree < -0.25 * math.pi:
-                path.append(UP)
-            elif -0.25 * math.pi <= degree < 0.25 * math.pi:
-                path.append(LEFT)
-            elif 0.25 * math.pi <= degree < 0.75 * math.pi:
-                path.append(DOWN)
-            else:
-                path.append(RIGHT)
-            #print("Appended to")
-            #print(path)
+        direction = movement_direction(x_delta, y_delta)
+        if direction is not None:
+            path.append(direction)
         else:
             not_changed += 1
     else:
@@ -93,7 +117,14 @@ while True:
     if not_changed > 5:
         if len(path) >= 2:
             print(path)
-            execute(ghmm.EmissionSequence(models.sigma, path), models.models)
+            if train_mode == False:
+                execute(ghmm.EmissionSequence(models.sigma, path), models.models)
+            else:
+                print("Training model %d" % (train_target,))
+                train(ghmm.EmissionSequence(models.sigma, path), models.models[train_target][0])
+                train_mode = False
+                print("Leaving training mode")
+                print(models.models[train_target][0])
         path = []
         not_changed = 0
     
@@ -103,5 +134,17 @@ while True:
     if key == 27:
         cv2.destroyWindow(winName)
         break
- 
+    elif key == ord('0'):
+        train_mode = True
+        train_target = 0
+    elif key == ord('1'):
+        train_mode = True
+        train_target = 1
+    elif key == ord('2'):
+        train_mode = True
+        train_target = 2
+    elif key == ord('3'):
+        train_mode = True
+        train_target = 3
+
 print "Goodbye"

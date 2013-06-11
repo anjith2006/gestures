@@ -17,7 +17,7 @@ gestures = [
 # TODO: Zuordnung von Indizes stimmt noch nicht
 def transition_matrix(gesture):
     gestes = list(set(gesture))
-    A = [[0.01 for i in range(GESTES_COUNT)] for j in range(GESTES_COUNT)]
+    A = [[0.1 for i in range(GESTES_COUNT)] for j in range(GESTES_COUNT)]
     # self transitions are high
     for geste in gestes:
         A[geste][geste] = 0.7
@@ -35,7 +35,7 @@ def transition_matrix(gesture):
 
 def emission_matrix(gesture):
     gestes = set(gesture)
-    B = [[0.01 for i in range(OBSERVATIONS_COUNT)] for j in range(GESTES_COUNT)]
+    B = [[0.1 for i in range(OBSERVATIONS_COUNT)] for j in range(GESTES_COUNT)]
     
     for geste in gestes:
         if geste == UP:
@@ -67,29 +67,3 @@ for gesture in gestures:
     m = ghmm.HMMFromMatrices(sigma, ghmm.DiscreteDistribution(sigma), A, B, pi)
     print(m)
     models.append((m, gesture[1]))
-
-close = models[0][0]
-close.baumWelch(ghmm.SequenceSet(sigma, [
-    [0, 0, 0, 0, 3, 3, 3, 3, 3],
-    [0, 0, 0, 0, 3, 3, 3, 3, 3, 1],
-    [0, 0, 0, 0, 0, 3, 3, 3, 1],
-    [0, 0, 0, 3, 3, 3],
-    [0, 0, 0, 3, 3, 3, 1]
-]))
-
-print(close)
-
-#A = [[0.7, 0.3], [0, 1]]
-#B = [[0.6, 0.1, 0.2, 0.2], [.2, .2, .1, .6]]
-#pi = [1, 0]
-#m = ghmm.HMMFromMatrices(sigma, ghmm.DiscreteDistribution(sigma), A, B, pi)
-
-#A2 = [[0.7, 0.3], [0, 1]]
-#B2 = [[0.6, 0.1, 0.2, 0.2], [0.2, .2, .6, .1]]
-#pi2 = [1, 0]
-#m2 = ghmm.HMMFromMatrices(sigma, ghmm.DiscreteDistribution(sigma), A2, B2, pi2)
-
-#models = [
-#    (m, ['/usr/bin/xdotool', 'getactivewindow', 'windowkill']),
-#    (m2, ['notify-send', '"received command"', '"Hooray!"']),
-#]
