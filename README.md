@@ -2,7 +2,11 @@ gestures
 ========
 
 Gestures is a lightweight tool for tracking gestures with your webcam and 
-executing global commands (like volume up).
+executing global commands (like volume up). It detects gestures
+from a colored object you hold in your hand.
+
+It works by using OpenCV image processing library for object detection
+and hidden Markov models for calculating the most probable gesture.
 
 
 Requirements
