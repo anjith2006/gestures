@@ -24,6 +24,14 @@ command for `subprocess`. The latter one is a list of command parts where
 you split your command at spaces, i.e. `firefox -safe-mode` would become
 `['firefox', '-safe-mode']`.
 
+The complete entry would then look like this:
+
+```python
+gestures = [
+    ([UP, DOWN, UP], ['firefox', '-safe-mode'])
+]
+```
+
 Pay attention to the fact that there are no quotation marks around directions
 like `UP` and `DOWN`, because these are special keywords by gestures.
 
