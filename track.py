@@ -7,11 +7,6 @@ import numpy
 import ghmm
 import models
 
-UP = 0
-DOWN = 1
-LEFT = 2
-RIGHT = 3
-
 path = []
 
 def diffImg(t0, t1, t2):
@@ -34,14 +29,22 @@ def pointer_pos(img):
 def movement_direction(x_delta, y_delta):
     if abs(x_delta) > 10 or abs(y_delta) > 10:
         degree = math.atan2(y_delta, x_delta)
-        if -0.75 * math.pi <= degree < -0.25 * math.pi:
-            direction = UP
-        elif -0.25 * math.pi <= degree < 0.25 * math.pi:
-            direction = LEFT
-        elif 0.25 * math.pi <= degree < 0.75 * math.pi:
-            direction = DOWN
+        if -0.875 * math.pi <= degree < -0.625 * math.pi:
+            direction = models.UP_RIGHT
+        elif -0.625 * math.pi <= degree < -0.375 * math.pi:
+            direction = models.UP
+        elif -0.375 * math.pi <= degree < -0.125 * math.pi:
+            direction = models.UP_LEFT
+        elif -0.125 * math.pi <= degree < 0.125 * math.pi:
+            direction = models.LEFT
+        elif 0.125 * math.pi <= degree < 0.375 * math.pi:
+            direction = models.DOWN_LEFT
+        elif 0.375 * math.pi <= degree < 0.625 * math.pi:
+            direction = models.DOWN
+        elif 0.625 * math.pi <= degree < 0.875 * math.pi:
+            direction = models.DOWN_RIGHT
         else:
-            direction = RIGHT
+            direction = models.RIGHT
 
         return direction
     else:

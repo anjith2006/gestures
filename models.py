@@ -4,8 +4,12 @@ UP = 0
 DOWN = 1
 LEFT = 2
 RIGHT = 3
-GESTES_COUNT = 4
-OBSERVATIONS_COUNT = 4
+UP_RIGHT = 4
+UP_LEFT = 5
+DOWN_RIGHT = 6
+DOWN_LEFT = 7
+GESTES_COUNT = 8
+OBSERVATIONS_COUNT = 8
 
 gestures = [
     ([UP, RIGHT], ['/usr/bin/xdotool', 'getactivewindow', 'windowkill']),
@@ -39,25 +43,25 @@ def emission_matrix(gesture):
     
     for geste in gestes:
         if geste == UP:
-            B[geste] = [0.5, 0.1, 0.2, 0.2]
+            B[geste] = [0.5, 0.05, 0.1, 0.1, 0.2, 0.2, 0.1, 0.1]
         elif geste == DOWN:
-            B[geste] = [0.1, 0.5, 0.2, 0.2]
+            B[geste] = [0.05, 0.5, 0.1, 0.1, 0.1, 0.1, 0.2, 0.2]
         elif geste == LEFT:
-            B[geste] = [0.2, 0.2, 0.5, 0.1]
+            B[geste] = [0.1, 0.1, 0.5, 0.05, 0.1, 0.2, 0.1, 0.2]
         else:
-            B[geste] = [0.2, 0.2, 0.1, 0.5]
-
+            B[geste] = [0.1, 0.1, 0.05, 0.5, 0.2, 0.1, 0.2, 0.1]
+    print(B)
     return B
 
 def initial_vector(gesture):
-    vec = [0 for i in range(4)]
+    vec = [0 for i in range(GESTES_COUNT)]
     vec[gesture[0]] = 1
     return vec
 
 # Construct parameters
 models = []
 
-sigma = ghmm.IntegerRange(0, 4)
+sigma = ghmm.IntegerRange(0, 8)
 for gesture in gestures:
     # transition matrix
     A = transition_matrix(gesture[0])
