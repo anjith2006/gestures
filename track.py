@@ -72,6 +72,18 @@ def execute(emission_seq, models):
 def train(emission_seq, model):
     model.baumWelch(emission_seq)
 
+def current_image(cam):
+    img = cam.read()[1]
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+    # Extract by color and make binary image (=black/white)
+    img = cv2.inRange(img, (70, 50, 50), (130, 200, 200))
+                        
+    # erode and dilate to reduce noise
+    img = cv2.erode(img, numpy.array([[1] * ed_size] * ed_size), iterations=2)
+    img = cv2.dilate(img, numpy.array([[1] * ed_size] * ed_size), iterations=2)
+
+    return img
+
 
 # Two variables to determine changes in train-mode
 train_mode_pre = False
@@ -85,11 +97,7 @@ cam = cv2.VideoCapture(0)
 winName = "Movement Indicator"
 cv2.namedWindow(winName, cv2.CV_WINDOW_AUTOSIZE)
 
-img = cv2.cvtColor(cam.read()[1], cv2.COLOR_BGR2HSV)
-cv2.imwrite('test.jpg', img)
-img = cv2.inRange(img, (130, 50, 50), (160, 100, 100))
-img = cv2.erode(img, numpy.array([[1] * ed_size] * ed_size), iterations=2)
-img = cv2.dilate(img, numpy.array([[1] * ed_size] * ed_size), iterations=2)
+img = current_image(cam)
 
 x1, y1 = pointer_pos(img)
 
@@ -97,24 +105,21 @@ not_changed = 0
 
 while True:
     # if we switched to train mode, delete all prior knowledge
-    if train_mode_pre == False and train_mode == True:
+    if train_mode_pre is False and train_mode is True:
         path = []
         not_changed = 0
 
     train_mode_pre = train_mode
     x0 = x1
     y0 = y1
-    
-    img = cv2.cvtColor(cam.read()[1], cv2.COLOR_BGR2HSV)
-    img = cv2.inRange(img, (70, 50, 50), (130, 200, 200))
-    img = cv2.erode(img, numpy.array([[1] * ed_size] * ed_size), iterations=2)
-    img = cv2.dilate(img, numpy.array([[1] * ed_size] * ed_size), iterations=2)
+
+    img = current_image(cam)
     x1, y1 = pointer_pos(img)
 
-    if x1 != None and x0 != None and y1 != None and y0 != None:
+    if x1 is not None and x0 is not None and y1 is not None and y0 is not None:
         x_delta = x1 - x0
         y_delta = y1 - y0
-        
+
         direction = movement_direction(x_delta, y_delta)
         if direction is not None:
             path.append(direction)
