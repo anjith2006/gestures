@@ -6,6 +6,7 @@ import subprocess
 import numpy
 import ghmm
 import models
+import simplejson
 
 path = []
 
@@ -55,7 +56,7 @@ def execute(emission_seq, models):
     max_comm = None
     max_val = 0
     for model, command in models:
-        print(model.forward(emission_seq))
+        #print(model.forward(emission_seq))
         res = model.forward(emission_seq)
 
         if res[1][-1] > max_val:
@@ -82,7 +83,8 @@ winName = "Movement Indicator"
 cv2.namedWindow(winName, cv2.CV_WINDOW_AUTOSIZE)
 
 img = cv2.cvtColor(cam.read()[1], cv2.COLOR_BGR2HSV)
-img = cv2.inRange(img, (70, 100, 100), (150, 255, 255))
+cv2.imwrite('test.jpg', img)
+img = cv2.inRange(img, (130, 50, 50), (160, 100, 100))
 img = cv2.erode(img, numpy.array([[1,1,1],[1,1,1],[1,1,1]]))
 img = cv2.dilate(img, numpy.array([[1,1,1],[1,1,1],[1,1,1]]), iterations=3)
 
@@ -101,8 +103,8 @@ while True:
     y0 = y1
     
     img = cv2.cvtColor(cam.read()[1], cv2.COLOR_BGR2HSV)
-    img = cv2.inRange(img, (70, 50, 50), (150, 255, 255))
-    img = cv2.erode(img, numpy.array([[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1]]), iterations=2)
+    img = cv2.inRange(img, (70, 50, 50), (130, 200, 200))
+    img = cv2.erode(img, numpy.array([[1,1,1,1,1,1,1],[1,1,1,1,1,1,1],[1,1,1,1,1,1,1],[1,1,1,1,1,1,1],[1,1,1,1,1,1,1],[1,1,1,1,1,1,1],[1,1,1,1,1,1,1]]), iterations=2)
     img = cv2.dilate(img, numpy.array([[1,1,1],[1,1,1],[1,1,1]]), iterations=3)
     x1, y1 = pointer_pos(img)
 
@@ -128,6 +130,11 @@ while True:
                 train_mode = False
                 print("Leaving training mode")
                 print(models.models[train_target][0])
+
+                with open("/".join(('models', str(train_target))), 'w') as f:
+                    (A, B, pi) = tuple(models.models[train_target][0].asMatrices())
+                    simplejson.dump((A, B, pi), f)
+
         path = []
         not_changed = 0
     

@@ -1,4 +1,6 @@
 import ghmm
+import simplejson
+import os.path
 
 UP = 0
 DOWN = 1
@@ -62,12 +64,18 @@ def initial_vector(gesture):
 models = []
 
 sigma = ghmm.IntegerRange(0, 8)
+i = 0
 for gesture in gestures:
-    # transition matrix
-    A = transition_matrix(gesture[0])
-    B = emission_matrix(gesture[0])
-    pi = initial_vector(gesture[0])
-                # in gesture
+    if not os.path.isfile('/'.join(('models', str(i)))):
+        A = transition_matrix(gesture[0])
+        B = emission_matrix(gesture[0])
+        pi = initial_vector(gesture[0])
+    else:
+        with open('/'.join(('models', str(i)))) as f:
+            (A, B, pi) = simplejson.load(f)
+    
     m = ghmm.HMMFromMatrices(sigma, ghmm.DiscreteDistribution(sigma), A, B, pi)
     print(m)
     models.append((m, gesture[1]))
+
+    i += 1
