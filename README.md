@@ -17,6 +17,7 @@ The following non-standard libraries are required for Python:
 - opencv
 - ghmm
 - numpy
+- simplejson
 
 Configuration
 -------------
