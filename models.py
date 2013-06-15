@@ -20,6 +20,8 @@ gestures = [
     ([UP], ['amixer', 'set', 'Master', '10%+']),
 ]
 
+training_data = [[] for gesture in gestures]
+
 # TODO: Zuordnung von Indizes stimmt noch nicht
 def transition_matrix(gesture):
     gestes = list(set(gesture))
@@ -66,15 +68,16 @@ models = []
 sigma = ghmm.IntegerRange(0, 8)
 i = 0
 for gesture in gestures:
-    if not os.path.isfile('/'.join(('models', str(i)))):
-        A = transition_matrix(gesture[0])
-        B = emission_matrix(gesture[0])
-        pi = initial_vector(gesture[0])
-    else:
-        with open('/'.join(('models', str(i)))) as f:
-            (A, B, pi) = simplejson.load(f)
+    A = transition_matrix(gesture[0])
+    B = emission_matrix(gesture[0])
+    pi = initial_vector(gesture[0])
     
     m = ghmm.HMMFromMatrices(sigma, ghmm.DiscreteDistribution(sigma), A, B, pi)
+    
+    if os.path.isfile('/'.join(('models', str(i)))):
+        with open('/'.join(('models', str(i)))) as f:
+            training_data[i] = simplejson.load(f)
+            m.baumWelch(ghmm.SequenceSet(sigma, training_data[i]))
     print(m)
     models.append((m, gesture[1]))
 

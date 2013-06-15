@@ -125,15 +125,13 @@ while True:
             if train_mode == False:
                 execute(ghmm.EmissionSequence(models.sigma, path), models.models)
             else:
+                models.training_data[train_target].append(path)
                 print("Training model %d" % (train_target,))
-                train(ghmm.EmissionSequence(models.sigma, path), models.models[train_target][0])
                 train_mode = False
                 print("Leaving training mode")
-                print(models.models[train_target][0])
 
                 with open("/".join(('models', str(train_target))), 'w') as f:
-                    (A, B, pi) = tuple(models.models[train_target][0].asMatrices())
-                    simplejson.dump((A, B, pi), f)
+                    simplejson.dump(models.training_data[train_target], f)
 
         path = []
         not_changed = 0
