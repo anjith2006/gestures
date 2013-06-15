@@ -47,7 +47,5 @@ mode and you can perform the gesture you want to be detected later.
 Depending on the number you pressed before, the appropriate gesture
 from the gestures list will be trained.
 
-Note: The training will not be saved yet, when you terminate the program.
-
 After a gesture has been performed in training mode, the program will
 return to detection mode again.
