@@ -10,6 +10,7 @@ import simplejson
 
 path = []
 
+
 def diffImg(t0, t1, t2):
     d1 = cv2.absdiff(t2, t1)
     d2 = cv2.absdiff(t1, t0)
@@ -77,6 +78,8 @@ train_mode_pre = False
 train_mode = False
 train_target = 0
 
+ed_size = 50
+
 cam = cv2.VideoCapture(0)
  
 winName = "Movement Indicator"
@@ -85,8 +88,8 @@ cv2.namedWindow(winName, cv2.CV_WINDOW_AUTOSIZE)
 img = cv2.cvtColor(cam.read()[1], cv2.COLOR_BGR2HSV)
 cv2.imwrite('test.jpg', img)
 img = cv2.inRange(img, (130, 50, 50), (160, 100, 100))
-img = cv2.erode(img, numpy.array([[1,1,1],[1,1,1],[1,1,1]]))
-img = cv2.dilate(img, numpy.array([[1,1,1],[1,1,1],[1,1,1]]), iterations=3)
+img = cv2.erode(img, numpy.array([[1] * ed_size] * ed_size), iterations=2)
+img = cv2.dilate(img, numpy.array([[1] * ed_size] * ed_size), iterations=2)
 
 x1, y1 = pointer_pos(img)
 
@@ -104,8 +107,8 @@ while True:
     
     img = cv2.cvtColor(cam.read()[1], cv2.COLOR_BGR2HSV)
     img = cv2.inRange(img, (70, 50, 50), (130, 200, 200))
-    img = cv2.erode(img, numpy.array([[1,1,1,1,1,1,1],[1,1,1,1,1,1,1],[1,1,1,1,1,1,1],[1,1,1,1,1,1,1],[1,1,1,1,1,1,1],[1,1,1,1,1,1,1],[1,1,1,1,1,1,1]]), iterations=2)
-    img = cv2.dilate(img, numpy.array([[1,1,1],[1,1,1],[1,1,1]]), iterations=3)
+    img = cv2.erode(img, numpy.array([[1] * ed_size] * ed_size), iterations=2)
+    img = cv2.dilate(img, numpy.array([[1] * ed_size] * ed_size), iterations=2)
     x1, y1 = pointer_pos(img)
 
     if x1 != None and x0 != None and y1 != None and y0 != None:
