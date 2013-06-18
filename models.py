@@ -18,6 +18,7 @@ gestures = [
     ([UP, LEFT], ['notify-send', '"received command"', '"Hooray!"']),
     ([DOWN], ['amixer', 'set', 'Master', '10%-']),
     ([UP], ['amixer', 'set', 'Master', '10%+']),
+    ([UP, DOWN, UP], ['mplayer']),
 ]
 
 training_data = [[] for gesture in gestures]
@@ -74,8 +75,8 @@ for gesture in gestures:
     
     m = ghmm.HMMFromMatrices(sigma, ghmm.DiscreteDistribution(sigma), A, B, pi)
     
-    if os.path.isfile('/'.join(('models', str(i)))):
-        with open('/'.join(('models', str(i)))) as f:
+    if os.path.isfile(''.join(('models/', str(i), '.train'))):
+        with open(''.join(('models/', str(i), '.train'))) as f:
             training_data[i] = simplejson.load(f)
             m.baumWelch(ghmm.SequenceSet(sigma, training_data[i]))
     print(m)

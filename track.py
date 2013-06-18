@@ -133,7 +133,7 @@ while True:
                 train_mode = False
                 print("Leaving training mode")
 
-                with open("/".join(('models', str(train_target))), 'w') as f:
+                with open("".join(('models/', str(train_target), '.train')), 'w') as f:
                     simplejson.dump(models.training_data[train_target], f)
 
         path = []
@@ -141,7 +141,7 @@ while True:
     
     cv2.imshow(winName, img)
 
-    key = cv2.waitKey(50)
+    key = cv2.waitKey(1)
     if key == 27:
         cv2.destroyWindow(winName)
         break
