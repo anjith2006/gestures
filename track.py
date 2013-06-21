@@ -28,8 +28,8 @@ def pointer_pos(img):
 
     return (None, None)
 
-def movement_direction(x_delta, y_delta):
-    if abs(x_delta) > 10 or abs(y_delta) > 10:
+def movement_direction(x_delta, y_delta, threshold = 10):
+    if abs(x_delta) > threshold or abs(y_delta) > threshold:
         degree = math.atan2(y_delta, x_delta)
         if -0.875 * math.pi <= degree < -0.625 * math.pi:
             direction = models.UP_RIGHT
