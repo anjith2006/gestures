@@ -39,7 +39,8 @@ def transition_matrix(gesture):
 
     for second in gestes[1:]:
         # if we have a transition, prob must be high
-        A[first][second] = 0.3
+        A[first][second] = 0.4
+        first = second
 
     # ending element has no transitions anymore, so give it one
     A[gestes[-1]][gestes[-1]] = 1
