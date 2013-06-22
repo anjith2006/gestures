@@ -54,19 +54,15 @@ def movement_direction(x_delta, y_delta, threshold = 10):
 
 
 def execute(emission_seq, models):
-    max_comm = None
-    max_val = 0
+    considered = []
     for model, command in models:
-        #print(model.forward(emission_seq))
         res = model.forward(emission_seq)
-
-        if res[1][-1] > max_val:
-            max_val = res[1][-1]
-            max_comm = command
-
+        considered.append((res[1][-1], command))
+    
+    max_val, command = max(considered)
     if max_val >= 0.3:
-        subprocess.call(max_comm)
-        print(max_comm)
+        subprocess.call(command)
+        print(command)
 
 
 def train(emission_seq, model):
