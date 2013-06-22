@@ -44,7 +44,7 @@ def transition_matrix(gesture):
 
 def emission_matrix(gesture):
     gestes = set(gesture)
-    B = [[0.1 for i in range(OBSERVATIONS_COUNT)] for j in range(GESTES_COUNT)]
+    B = [[float(1)/OBSERVATIONS_COUNT for i in range(OBSERVATIONS_COUNT)] for j in range(GESTES_COUNT)]
     
     for geste in gestes:
         if geste == UP:
