@@ -23,10 +23,6 @@ gestures = [
 
 training_data = [[] for gesture in gestures]
 
-def uniq_list(seq):
-    seen = set()
-    return [x for x in seq if x not in seen and not seen.add(x)]
-
 def normalize_rows(matrix):
     new_matrix = []
 
@@ -44,21 +40,20 @@ def normalize_rows(matrix):
 
 # TODO: Zuordnung von Indizes stimmt noch nicht
 def transition_matrix(gesture):
-    gestes = uniq_list(gesture)
     A = [[0 for i in range(GESTES_COUNT)] for j in range(GESTES_COUNT)]
     # self transitions are high
-    for geste in gestes:
+    for geste in gesture:
         A[geste][geste] = 0.7
 
-    first = gestes[0]
+    first = gesture[0]
 
-    for second in gestes[1:]:
+    for second in gesture[1:]:
         # if we have a transition, prob must be high
         A[first][second] = 0.4
         first = second
 
     # ending element has no transitions anymore, so give it one
-    A[gestes[-1]][gestes[-1]] = 1
+    A[gesture[-1]][gesture[-1]] = 1
 
     return normalize_rows(A)
 
