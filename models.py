@@ -27,10 +27,25 @@ def uniq_list(seq):
     seen = set()
     return [x for x in seq if x not in seen and not seen.add(x)]
 
+def normalize_rows(matrix):
+    new_matrix = []
+
+    for row in matrix:
+        div = sum(row)
+        new_matrix.append([])
+        
+        for elem in row:
+            if div != 0:
+                new_matrix[-1].append(float(elem)/div)
+            else:
+                new_matrix[-1].append(elem)
+    
+    return new_matrix
+
 # TODO: Zuordnung von Indizes stimmt noch nicht
 def transition_matrix(gesture):
     gestes = uniq_list(gesture)
-    A = [[0.1 for i in range(GESTES_COUNT)] for j in range(GESTES_COUNT)]
+    A = [[0 for i in range(GESTES_COUNT)] for j in range(GESTES_COUNT)]
     # self transitions are high
     for geste in gestes:
         A[geste][geste] = 0.7
@@ -45,7 +60,7 @@ def transition_matrix(gesture):
     # ending element has no transitions anymore, so give it one
     A[gestes[-1]][gestes[-1]] = 1
 
-    return A
+    return normalize_rows(A)
 
 def emission_matrix():
     B = [[float(1)/OBSERVATIONS_COUNT for i in range(OBSERVATIONS_COUNT)] for j in range(GESTES_COUNT)]
