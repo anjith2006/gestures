@@ -23,9 +23,13 @@ gestures = [
 
 training_data = [[] for gesture in gestures]
 
+def uniq_list(seq):
+    seen = set()
+    return [x for x in seq if x not in seen and not seen.add(x)]
+
 # TODO: Zuordnung von Indizes stimmt noch nicht
 def transition_matrix(gesture):
-    gestes = list(set(gesture))
+    gestes = uniq_list(gesture)
     A = [[0.1 for i in range(GESTES_COUNT)] for j in range(GESTES_COUNT)]
     # self transitions are high
     for geste in gestes:
@@ -42,20 +46,13 @@ def transition_matrix(gesture):
 
     return A
 
-def emission_matrix(gesture):
-    gestes = set(gesture)
+def emission_matrix():
     B = [[float(1)/OBSERVATIONS_COUNT for i in range(OBSERVATIONS_COUNT)] for j in range(GESTES_COUNT)]
     
-    for geste in gestes:
-        if geste == UP:
-            B[geste] = [0.37, 0.04, 0.07, 0.07, 0.155, 0.155, 0.07, 0.07]
-        elif geste == DOWN:
-            B[geste] = [0.04, 0.37, 0.07, 0.07, 0.07, 0.07, 0.155, 0.155]
-        elif geste == LEFT:
-            B[geste] = [0.07, 0.07, 0.37, 0.04, 0.07, 0.155, 0.07, 0.155]
-        else:
-            B[geste] = [0.07, 0.07, 0.04, 0.37, 0.155, 0.07, 0.155, 0.07]
-    print(B)
+    B[UP] = [0.37, 0.04, 0.08, 0.08, 0.165, 0.165, 0.05, 0.05]
+    B[DOWN] = [0.04, 0.37, 0.08, 0.08, 0.05, 0.05, 0.165, 0.165]
+    B[LEFT] = [0.08, 0.08, 0.37, 0.04, 0.05, 0.165, 0.05, 0.165]
+    B[RIGHT] = [0.08, 0.08, 0.04, 0.37, 0.165, 0.05, 0.165, 0.05]
     return B
 
 def initial_vector(gesture):
