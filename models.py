@@ -48,13 +48,13 @@ def emission_matrix(gesture):
     
     for geste in gestes:
         if geste == UP:
-            B[geste] = [0.5, 0.05, 0.1, 0.1, 0.2, 0.2, 0.1, 0.1]
+            B[geste] = [0.37, 0.04, 0.07, 0.07, 0.155, 0.155, 0.07, 0.07]
         elif geste == DOWN:
-            B[geste] = [0.05, 0.5, 0.1, 0.1, 0.1, 0.1, 0.2, 0.2]
+            B[geste] = [0.04, 0.37, 0.07, 0.07, 0.07, 0.07, 0.155, 0.155]
         elif geste == LEFT:
-            B[geste] = [0.1, 0.1, 0.5, 0.05, 0.1, 0.2, 0.1, 0.2]
+            B[geste] = [0.07, 0.07, 0.37, 0.04, 0.07, 0.155, 0.07, 0.155]
         else:
-            B[geste] = [0.1, 0.1, 0.05, 0.5, 0.2, 0.1, 0.2, 0.1]
+            B[geste] = [0.07, 0.07, 0.04, 0.37, 0.155, 0.07, 0.155, 0.07]
     print(B)
     return B
 
@@ -74,7 +74,7 @@ for gesture in gestures:
     pi = initial_vector(gesture[0])
     
     m = ghmm.HMMFromMatrices(sigma, ghmm.DiscreteDistribution(sigma), A, B, pi)
-    
+    print(m)
     if os.path.isfile(''.join(('models/', str(i), '.train'))):
         with open(''.join(('models/', str(i), '.train'))) as f:
             training_data[i] = simplejson.load(f)
