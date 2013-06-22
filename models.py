@@ -23,9 +23,13 @@ gestures = [
 
 training_data = [[] for gesture in gestures]
 
+def uniq_list(seq):
+    seen = set()
+    return [x for x in seq if x not in seen and not seen.add(x)]
+
 # TODO: Zuordnung von Indizes stimmt noch nicht
 def transition_matrix(gesture):
-    gestes = list(set(gesture))
+    gestes = uniq_list(gesture)
     A = [[0.1 for i in range(GESTES_COUNT)] for j in range(GESTES_COUNT)]
     # self transitions are high
     for geste in gestes:
