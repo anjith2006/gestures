@@ -42,20 +42,13 @@ def transition_matrix(gesture):
 
     return A
 
-def emission_matrix(gesture):
-    gestes = set(gesture)
+def emission_matrix():
     B = [[float(1)/OBSERVATIONS_COUNT for i in range(OBSERVATIONS_COUNT)] for j in range(GESTES_COUNT)]
     
-    for geste in gestes:
-        if geste == UP:
-            B[geste] = [0.37, 0.04, 0.08, 0.08, 0.165, 0.165, 0.05, 0.05]
-        elif geste == DOWN:
-            B[geste] = [0.04, 0.37, 0.08, 0.08, 0.05, 0.05, 0.165, 0.165]
-        elif geste == LEFT:
-            B[geste] = [0.08, 0.08, 0.37, 0.04, 0.05, 0.165, 0.05, 0.165]
-        else:
-            B[geste] = [0.08, 0.08, 0.04, 0.37, 0.165, 0.05, 0.165, 0.05]
-    print(B)
+    B[UP] = [0.37, 0.04, 0.08, 0.08, 0.165, 0.165, 0.05, 0.05]
+    B[DOWN] = [0.04, 0.37, 0.08, 0.08, 0.05, 0.05, 0.165, 0.165]
+    B[LEFT] = [0.08, 0.08, 0.37, 0.04, 0.05, 0.165, 0.05, 0.165]
+    B[RIGHT] = [0.08, 0.08, 0.04, 0.37, 0.165, 0.05, 0.165, 0.05]
     return B
 
 def initial_vector(gesture):
