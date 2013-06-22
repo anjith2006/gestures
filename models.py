@@ -65,9 +65,9 @@ models = []
 
 sigma = ghmm.IntegerRange(0, 8)
 i = 0
+B = emission_matrix()
 for gesture in gestures:
     A = transition_matrix(gesture[0])
-    B = emission_matrix(gesture[0])
     pi = initial_vector(gesture[0])
     
     m = ghmm.HMMFromMatrices(sigma, ghmm.DiscreteDistribution(sigma), A, B, pi)
