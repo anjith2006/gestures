@@ -50,3 +50,7 @@ from the gestures list will be trained.
 
 After a gesture has been performed in training mode, the program will
 return to detection mode again.
+
+License
+-------
+This software is licensed under the Simplified BSD License.
